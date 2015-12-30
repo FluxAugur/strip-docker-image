@@ -77,7 +77,7 @@ function parse_commandline() {
 		    PACKAGES="$PACKAGES $OPTARG"
 		    ;;
 		f)
-		    FILES="$FILES $OPTARG"
+		    FILES="$FILES $(printf "${OPTARG}")"
 		    ;;
 		d)
 		    EXPORT_DIR="$OPTARG"
