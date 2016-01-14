@@ -3,7 +3,7 @@
 #	strip-docker-image - strips the bare essentials from an image and exports them
 #
 # SYNOPSIS
-#	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v] 
+#	strip-docker-image -i image-name -t target-image-name -t [-p package | -f file] [-x expose-port] [-v]
 #
 #
 # OPTIONS
@@ -15,7 +15,7 @@
 #	-v			verbose
 #
 # DESCRIPTION
-#   	creates a new Docker image based on the scratch  which contains
+#       creates a new Docker image based on the scratch  which contains
 #	only the the source image of selected packages and files.
 #
 # EXAMPLE
@@ -56,55 +56,55 @@
 #
 
 function usage() {
-	echo "usage: $(basename $0) -i image-name -t stripped-image-name [-p package | -f file] [-v]" >&2
-	echo "	$@" >&2
+    echo "usage: $(basename $0) -i image-name -t stripped-image-name [-p package | -f file] [-v]" >&2
+    echo "	$@" >&2
 }
 
 function parse_commandline() {
 
-	while getopts "vi:t:p:f:x:" OPT; do
-	    case "$OPT" in
-		v)
-		    VERBOSE=-v
-		    ;;
-		p)
-		    PACKAGES="$PACKAGES -p $OPTARG"
-		    ;;
-		f)
-		    FILES="$FILES -f $OPTARG"
-		    ;;
-		i)
-		    IMAGE_NAME="$OPTARG"
-		    ;;
-		t)
-		    TARGET_IMAGE_NAME="$OPTARG"
-		    ;;
-		x)
-		    EXPOSE_PORTS="$EXPOSE_PORTS $OPTARG"
-		    ;;
-		*)
-		    usage
-		    exit 1
-		    ;;
-	    esac
-	done
-	shift $((OPTIND-1))
+    while getopts "vi:t:p:f:x:" OPT; do
+        case "$OPT" in
+            v)
+                VERBOSE=-v
+                ;;
+            p)
+                PACKAGES="$PACKAGES -p $OPTARG"
+                ;;
+            f)
+                FILES="$FILES -f $OPTARG"
+                ;;
+            i)
+                IMAGE_NAME="$OPTARG"
+                ;;
+            t)
+                TARGET_IMAGE_NAME="$OPTARG"
+                ;;
+            x)
+                EXPOSE_PORTS="$EXPOSE_PORTS $OPTARG"
+                ;;
+            *)
+                usage
+                exit 1
+                ;;
+        esac
+    done
+    shift $((OPTIND-1))
 
-	if [ -z "$IMAGE_NAME" ] ; then
-		usage "image name is missing."
-		exit 1
-	fi
+    if [ -z "$IMAGE_NAME" ] ; then
+        usage "image name is missing."
+        exit 1
+    fi
 
-	if [ -z "$TARGET_IMAGE_NAME" ] ; then
-		usage "target image name -t missing."
-		exit 1
-	fi
+    if [ -z "$TARGET_IMAGE_NAME" ] ; then
+        usage "target image name -t missing."
+        exit 1
+    fi
 
-	if [ -z "$PACKAGES" -a -z "$FILES" ] ; then
-		usage "Missing -p or -f options"
-		exit 1
-	fi
-	export PACKAGES FILES VERBOSE
+    if [ -z "$PACKAGES" -a -z "$FILES" ] ; then
+        usage "Missing -p or -f options"
+        exit 1
+    fi
+    export PACKAGES FILES VERBOSE
 }
 
 parse_commandline "$@"
@@ -114,8 +114,8 @@ mkdir -p $DIR/export
 SCRIPT_DIR=$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )
 
 docker run -v $PWD/$DIR/export:/export \
-	  -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
-	  /mybin/strip-docker-image-export -d /export "${VERBOSE} ${PACKAGES} ${FILES}"
+       -v $SCRIPT_DIR:/mybin $IMAGE_NAME \
+       /mybin/strip-docker-image-export -d /export "${VERBOSE} ${PACKAGES} ${FILES}"
 
 cat > $DIR/Dockerfile <<!
 FROM scratch
@@ -123,12 +123,12 @@ ADD export /
 !
 
 for PORT in $EXPOSE_PORTS ; do
-	echo EXPOSE $PORT >> $DIR/Dockerfile
+    echo EXPOSE $PORT >> $DIR/Dockerfile
 done
 
 (
-	cd $DIR
-	docker build --no-cache -t $TARGET_IMAGE_NAME .
+    cd $DIR
+    docker build --no-cache -t $TARGET_IMAGE_NAME .
 )
 
 rm -rf $DIR
