@@ -158,3 +158,6 @@ tar czf - $((
                list_all_packages $PACKAGES
                list_dependencies $FILES
            )  | sort -u ) | ( cd $EXPORT_DIR ; tar -xzh${VERBOSE}f - )
+
+# Change folder root permissions to user permissions.
+chown ${CHOWN_DOCKER} $EXPORT_DIR -R
