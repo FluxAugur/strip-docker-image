@@ -1,6 +1,8 @@
 #!/bin/bash
 ../bin/strip-docker-image -i nginx -t stripped-nginx  \
   -x 80 \
+  -x 443 \
+  -x 7828 \
   -p nginx  \
   -f /etc/passwd \
   -f /etc/group \
@@ -14,3 +16,4 @@
   -f /var/run \
   -f /var/log/nginx \
   -f /var/cache/nginx
+

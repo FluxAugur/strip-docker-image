@@ -131,6 +131,8 @@ for PORT in $EXPOSE_PORTS ; do
   echo EXPOSE $PORT >> $DIR/Dockerfile
 done
 
+echo 'CMD [ "nginx", "-g", "daemon off;" ]' >> $DIR/Dockerfile
+
 (
   cd $DIR
   docker build --no-cache -t $TARGET_IMAGE_NAME .
