@@ -147,11 +147,16 @@ function list_dependencies() {
 }
 
 function list_packages() {
-        /usr/bin/dpkg -L $1 | while read FILE ; do
-    if [ ! -d "$FILE" ] ; then
-      list_dependencies "$FILE"
-    fi
-        done
+		if command -v /usr/bin/dpkg -L $1 >/dev/null 2>&1; then
+			DEPS=$(/usr/bin/dpkg -L $1)
+		else
+			DEPS=$(/usr/bin/rpm -ql $1)
+		fi
+		while read FILE ; do
+			if [ ! -d "$FILE" ] ; then
+				list_dependencies "$FILE"
+			fi
+    done <<< "$DEPS"
 }
 
 function list_all_packages() {
@@ -160,9 +165,8 @@ function list_all_packages() {
   done
 }
 
-parse_commandline $@
+parse_commandline "$@"
 
-cp -f /dev/null $EXPORT_DIR/file_list
 
 tar czf - $(
 
@@ -172,4 +176,3 @@ tar czf - $(
   )  | sort -u | uniq
 
 ) | ( cd $EXPORT_DIR ; tar -xzh${VERBOSE}f - )
-
